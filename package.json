@@ -7,10 +7,10 @@
         "build": "next build",
         "start": "next start --port 6001",
         "lint": "next lint",
-        "docker:up": "docker-compose up",
-        "docker:down": "docker-compose down",
-        "docker:build": "docker-compose build",
-        "docker:prod": "NODE_ENV=production PORT=6001 docker-compose up"
+        "docker:up": "docker compose up",
+        "docker:down": "docker compose down",
+        "docker:build": "docker compose build",
+        "docker:prod": "NODE_ENV=production PORT=6001 docker compose up"
     },
     "dependencies": {
         "@ai-sdk/amazon-bedrock": "^3.0.52",

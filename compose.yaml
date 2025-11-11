@@ -1,12 +1,17 @@
-version: '3.8'
-
 services:
-  app:
+  next-ai-drawio:
     build:
       context: .
       dockerfile: Dockerfile
     image: next-ai-drawio:latest
+    pull_policy: build
     container_name: next-ai-drawio
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-6002}
+      - HOSTNAME=0.0.0.0
+    env_file:
+      - .env.local
     ports:
       - "${PORT:-6002}:${PORT:-6002}"
     volumes:
@@ -15,12 +20,6 @@ services:
       - .:/app
       - /app/node_modules
       - /app/.next
-    env_file:
-      - .env.local
-    environment:
-      - NODE_ENV=${NODE_ENV:-development}
-      - PORT=${PORT:-6002}
-      - HOSTNAME=0.0.0.0
     # Override CMD based on NODE_ENV
     command: >
       sh -c "if [ \"$NODE_ENV\" = 'production' ]; then
@@ -35,3 +34,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    # Resource limits optimized for development workstation
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
