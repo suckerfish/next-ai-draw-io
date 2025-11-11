@@ -16,8 +16,8 @@ services:
       - "${PORT:-6002}:${PORT:-6002}"
     # Override CMD based on NODE_ENV
     command: >
-      sh -c "if [ \"$NODE_ENV\" = 'production' ]; then
-               npm start -- --port ${PORT:-6002};
+      sh -c "if [ \"$$NODE_ENV\" = 'production' ]; then
+               npm start -- --port $${PORT:-6002};
              else
                npm run dev;
              fi"
