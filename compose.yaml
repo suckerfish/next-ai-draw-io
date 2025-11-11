@@ -14,12 +14,6 @@ services:
       - .env
     ports:
       - "${PORT:-6002}:${PORT:-6002}"
-    volumes:
-      # Mount source for hot-reload during development
-      # Comment out these lines for pure production deployment
-      - .:/app
-      - /app/node_modules
-      - /app/.next
     # Override CMD based on NODE_ENV
     command: >
       sh -c "if [ \"$NODE_ENV\" = 'production' ]; then
