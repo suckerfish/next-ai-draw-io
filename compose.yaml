@@ -11,7 +11,7 @@ services:
       - PORT=${PORT:-6002}
       - HOSTNAME=0.0.0.0
     env_file:
-      - .env.local
+      - .env
     ports:
       - "${PORT:-6002}:${PORT:-6002}"
     volumes:
