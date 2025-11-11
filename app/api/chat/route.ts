@@ -12,6 +12,12 @@ import { replaceXMLParts } from "@/lib/utils";
 export const maxDuration = 60
 const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
 
+// OpenRouter via OpenAI provider (compatible with AI SDK v2)
+const openrouterViaOpenAI = createOpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+});
+
 export async function POST(req: Request) {
   try {
     const { messages, xml } = await req.json();
@@ -128,9 +134,9 @@ ${lastMessageText}
       // model: google("gemini-2.5-flash-preview-05-20"),
       // model: google("gemini-2.5-pro"),
       // model: bedrock('anthropic.claude-sonnet-4-20250514-v1:0'),
+      // model: bedrock('global.anthropic.claude-sonnet-4-5-20250929-v1:0'),
       system: systemMessage,
-      model: bedrock('global.anthropic.claude-sonnet-4-5-20250929-v1:0'),
-      // model: openrouter('moonshotai/kimi-k2:free'),
+      model: openrouterViaOpenAI('openai/gpt-4o-mini'),
       // model: model,
       // providerOptions: {
       //   google: {
@@ -144,13 +150,13 @@ ${lastMessageText}
       //     reasoningEffort: "minimal"
       //   },
       // },
-      providerOptions: {
-        anthropic: {
-          additionalModelRequestFields: {
-            anthropic_beta: ['fine-grained-tool-streaming-2025-05-14']
-          }
-        }
-      },
+      // providerOptions: {
+      //   anthropic: {
+      //     additionalModelRequestFields: {
+      //       anthropic_beta: ['fine-grained-tool-streaming-2025-05-14']
+      //     }
+      //   }
+      // },
       messages: enhancedMessages,
       tools: {
         // Client-side tool that will be executed on the client

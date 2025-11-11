@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: next-ai-drawio:latest
+    container_name: next-ai-drawio
+    ports:
+      - "${PORT:-6002}:${PORT:-6002}"
+    volumes:
+      # Mount source for hot-reload during development
+      # Comment out these lines for pure production deployment
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-6002}
+      - HOSTNAME=0.0.0.0
+    # Override CMD based on NODE_ENV
+    command: >
+      sh -c "if [ \"$NODE_ENV\" = 'production' ]; then
+               npm start -- --port ${PORT:-6002};
+             else
+               npm run dev;
+             fi"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-6002}/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
