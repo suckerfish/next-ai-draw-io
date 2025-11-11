@@ -7,7 +7,7 @@ services:
     pull_policy: build
     container_name: next-ai-drawio
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=${NODE_ENV:-production}
       - PORT=${PORT:-6002}
       - HOSTNAME=0.0.0.0
     env_file:
