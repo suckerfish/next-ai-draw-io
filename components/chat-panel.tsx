@@ -64,8 +64,10 @@ export default function ChatPanel() {
                 api: "/api/chat",
             }),
             async onToolCall({ toolCall }) {
+                console.log("onToolCall invoked:", toolCall.toolName, toolCall);
                 if (toolCall.toolName === "display_diagram") {
                     // Diagram is handled streamingly in the ChatMessageDisplay component
+                    console.log("display_diagram tool called with input:", toolCall.input);
                     addToolResult({
                         tool: "display_diagram",
                         toolCallId: toolCall.toolCallId,

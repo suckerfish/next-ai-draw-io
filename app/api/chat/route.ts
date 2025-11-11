@@ -136,7 +136,7 @@ ${lastMessageText}
       // model: bedrock('anthropic.claude-sonnet-4-20250514-v1:0'),
       // model: bedrock('global.anthropic.claude-sonnet-4-5-20250929-v1:0'),
       system: systemMessage,
-      model: openrouterViaOpenAI('openai/gpt-4o-mini'),
+      model: google("gemini-2.5-flash-preview-05-20"), // Default: Best for technical diagram generation
       // model: model,
       // providerOptions: {
       //   google: {
