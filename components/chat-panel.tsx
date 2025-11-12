@@ -12,11 +12,44 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { useChat } from "@ai-sdk/react";
+import type { UIMessage } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ChatInput } from "@/components/chat-input";
 import { ChatMessageDisplay } from "./chat-message-display";
 import { useDiagram } from "@/contexts/diagram-context";
 import { replaceNodes, formatXML } from "@/lib/utils";
+
+// Helper function to determine if assistant message is complete with all tool results
+function shouldSendAutomatically({ messages }: { messages: UIMessage[] }): boolean {
+    const lastMessage = messages[messages.length - 1];
+
+    // Only auto-send if the last message is from the assistant
+    if (lastMessage?.role !== "assistant") {
+        return false;
+    }
+
+    // Track if we found any tool calls and if all are complete
+    let hasToolCalls = false;
+    let allToolCallsComplete = true;
+
+    // Check if all tool calls in the last assistant message have completed
+    if (lastMessage.parts) {
+        for (const part of lastMessage.parts) {
+            // Check for tool-call parts
+            if (part.type.startsWith("tool-")) {
+                hasToolCalls = true;
+                // If there's a tool call that hasn't completed (no output available), mark as incomplete
+                if ('state' in part && part.state !== "output-available") {
+                    allToolCallsComplete = false;
+                }
+            }
+        }
+    }
+
+    // Only auto-send if there ARE tool calls AND all of them are complete
+    // This prevents infinite loops when the AI responds with just text
+    return hasToolCalls && allToolCallsComplete;
+}
 
 export default function ChatPanel() {
     const {
@@ -63,6 +96,7 @@ export default function ChatPanel() {
             transport: new DefaultChatTransport({
                 api: "/api/chat",
             }),
+            sendAutomaticallyWhen: shouldSendAutomatically,
             async onToolCall({ toolCall }) {
                 console.log("onToolCall invoked:", toolCall.toolName, toolCall);
                 if (toolCall.toolName === "display_diagram") {
