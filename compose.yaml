@@ -37,10 +37,10 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
-    networks:
-      - my_network
+    # networks:
+    #   - my_network
 
-networks:
-  my_network:
-    external: true
-    name: my_network
+# networks:
+#   my_network:
+#     external: true
+#     name: my_network
